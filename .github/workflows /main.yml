@@ -1,0 +1,36 @@
+name: Build Mobirise Extension
+
+on:
+  push:
+    paths:
+      - 'src/**'
+
+permissions:
+  contents: write  # Still needed to allow general repo access
+jobs:
+  build:
+    name: Create Downloadable Mobirise Extension
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Create Mobirise Extension File
+        run: |
+          cd src/
+          zip -r ../pixelagent-meta-seo.mbrext .
+          cd ../
+
+      - name: Install GitHub CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gh
+
+      - name: Create GitHub Release and Upload Asset
+        run: |
+          GH_TOKEN=${{ secrets.GH_PAT }} gh release create file-change-${{ github.sha }} \
+            ./pixelagent-meta-seo.mbrext \
+            --title "File Change Build ${{ github.sha }}" \
+            --notes "Automated release triggered by changes to src/" \
+            --prerelease
