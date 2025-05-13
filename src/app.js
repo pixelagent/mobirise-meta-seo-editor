@@ -3,35 +3,52 @@ defineM("meta-seo-editor", function(jQuery, mbrApp, TR) {
     name: "meta-seo-editor",
     events: {
       load: function () {
-        var a = this;
+        const self = this;
 
-        const $container = a.$body.find("#app-page-settings .app-layer-cont");
+        // Add fields to page settings
+        self.addFilter("sidebarPageSettings", function (panels, pageData) {
+          const description = pageData["meta-description"] || "";
+          const keywords = pageData["meta-keywords"] || "";
 
-        // Add a textarea to display full <body> HTML
-        $container.append([
-          '<div class="form-group">',
-          '  <label for="body_html_viewer">Body HTML Content</label>',
-          '  <textarea id="body_html_viewer" class="form-control" rows="15" placeholder="Loading body HTML..."></textarea>',
-          '</div>'
-        ].join("\n"));
+          panels.push({
+            title: "Meta SEO",
+            name: "meta-seo-editor",
+            html: [
+              '<div class="form-group col-md-12">',
+              '  <label class="control-label">Meta Description</label>',
+              `  <input type="text" name="meta-description" class="form-control" value="${description}" placeholder="Enter meta description">`,
+              '</div>',
+              '<div class="form-group col-md-12">',
+              '  <label class="control-label">Meta Keywords</label>',
+              `  <input type="text" name="meta-keywords" class="form-control" value="${keywords}" placeholder="Enter meta keywords">`,
+              '</div>'
+            ].join("\n")
+          });
 
-        // Try to get the <body> HTML from the iframe
-        setTimeout(function () {
-          try {
-            const iframe = document.querySelector("#app-iframe");
-            if (iframe && iframe.contentDocument) {
-              const bodyHTML = iframe.contentDocument.body.innerHTML.trim();
-              a.$body.find("#body_html_viewer").val(bodyHTML);
-              console.log("✅ Injected <body> HTML into textarea");
-            } else {
-              console.warn("⚠️ iframe not found or not loaded");
-              a.$body.find("#body_html_viewer").val("Unable to load iframe content.");
-            }
-          } catch (e) {
-            console.error("❌ Error reading <body> HTML:", e);
-            a.$body.find("#body_html_viewer").val("Error reading HTML: " + e.message);
+          return panels;
+        });
+
+        // Save on change
+        mbrApp.$body.on("input", "input[name='meta-description'], input[name='meta-keywords']", function () {
+          const $input = jQuery(this);
+          const page = mbrApp.activePage;
+          if (page) {
+            page[$input.attr("name")] = $input.val().trim();
           }
-        }, 1000); // Delay for iframe to load
+        });
+
+        // Inject <meta> tags into <head> during export
+        self.addFilter("publishHTML", function (html, page) {
+          const headInsert = [];
+          if (page["meta-description"]) {
+            headInsert.push(`<meta name="description" content="${page["meta-description"]}">`);
+          }
+          if (page["meta-keywords"]) {
+            headInsert.push(`<meta name="keywords" content="${page["meta-keywords"]}">`);
+          }
+
+          return html.replace(/<\/head>/i, headInsert.join("\n") + "\n</head>");
+        });
       }
     }
   });
