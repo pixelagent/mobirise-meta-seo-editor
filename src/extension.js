@@ -3,34 +3,31 @@ defineM("meta-seo-editor", function(jQuery, mbrApp, TR) {
     name: "meta-seo-editor",
     events: {
       load: function () {
-        console.log("meta-seo loaded");
-        const a = this;
+        const self = this;
 
-        a.addFilter("sidebarPageSettings", function (settingsPanels, pageData) {
-          const val = pageData["meta-seo-value"] || "";
+        self.addFilter("sidebarPageSettings", function (panels, pageData) {
+          const val = pageData["meta-seo-test"] || "";
 
-          const html = [
-            '<form class="mbr-form">',
-            '<div class="form-group col-md-12">',
-            '  <label class="control-label">Meta Description</label>',
-            '  <input type="text" name="meta-seo-input" class="form-control" value="' + val + '" placeholder="Enter meta description">',
-            '</div>',
-            '</form>'
-          ].join("\n");
-
-          settingsPanels.push({
-            title: "Meta SEO",
+          panels.push({
+            title: "Meta SEO (Test)",
             name: "meta-seo-editor",
-            html: html
+            html: `
+              <form class="mbr-form">
+                <div class="form-group col-md-12">
+                  <label class="control-label">Meta Description (Test)</label>
+                  <input type="text" name="meta-seo-input" class="form-control" value="${val}" placeholder="Type something...">
+                </div>
+              </form>
+            `
           });
 
-          return settingsPanels;
+          return panels;
         });
 
         mbrApp.$body.on("input", "input[name='meta-seo-input']", function () {
           const page = mbrApp.activePage;
           if (page) {
-            page["meta-seo-value"] = $(this).val().trim();
+            page["meta-seo-test"] = jQuery(this).val().trim();
           }
         });
       }
