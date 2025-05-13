@@ -1,4 +1,4 @@
-# Global HTML Insert
+# META SEO INSERT
 With this extension, you can change the head tag of your pages.
 
 ## Where to download?
