@@ -15,13 +15,7 @@ defineM("meta-seo-editor", function(jQuery, mbrApp, TR) {
           return panels;
         });
 
-        // optional, not needed for the test panel
-        mbrApp.$body.on("input", "input[name='meta-seo-input']", function () {
-          const page = mbrApp.activePage;
-          if (page) {
-            page["meta-seo-test"] = jQuery(this).val().trim();
-          }
-        });
+        
       }
     }
   });

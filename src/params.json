@@ -1,9 +1,10 @@
 {
   "name": "Meta SEO Editor",
   "alias": "meta-seo-editor",
-  "version": "1.0.0",
+  "version": 1,
   "minAppVersion": "5.4.0",
   "sidebarPageSettings": true,
   "appScript": true,
+  "description": "Insert SEO content into the <head> tag of every page. <a href='https://www.pixelagent.co.uk/software.html'>Learn more...</a>",
   "logo": "thumbnail.jpg"
 }
