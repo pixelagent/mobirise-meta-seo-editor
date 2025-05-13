@@ -4,9 +4,8 @@ defineM("meta-seo-editor", function(jQuery, mbrApp, TR) {
         events: {
             load: function() {
                 console.log("meta-seo-editor loaded");
- 
                 var a = this;
-
+                
                 // Add inputs to each page's settings
                 a.addFilter("sidebarPageSettings", function(settingsPanels, pageData) {
                     const keywords = pageData["meta-seo-keywords"] || "";
