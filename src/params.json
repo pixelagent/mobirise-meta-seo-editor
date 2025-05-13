@@ -4,6 +4,7 @@
     "version": 1,
     "minAppVersion": "5.4.0",
     "sidebarPageSettings": true,
+    "sidebar": true,
     "appScript": true,
     "appHtml": true,
     "appCss": true,
