@@ -1,4 +1,5 @@
 defineM("meta-seo-editor", function(jQuery, mbrApp, TR) {
+<<<<<<< Updated upstream
     mbrApp.regExtension({
       name: "meta-seo-editor",
       events: {
@@ -32,96 +33,83 @@ defineM("meta-seo-editor", function(jQuery, mbrApp, TR) {
             if (page) {
               page["meta-seo-value"] = $(this).val().trim();
             }
+=======
+  mbrApp.regExtension({
+    name: "meta-seo-editor",
+    events: {
+      load: function() {
+        console.log("Meta SEO Editor loaded");
+
+        const a = this;
+
+        a.addFilter("sidebarPageSettings", function(panels, page) {
+          const metaKeywords = page["metaKeywords"] || "";
+          const metaDescription = page["metaDescription"] || "";
+          const metaAuthor = page["metaAuthor"] || "";
+
+          const html = `
+            <div class="form-group col-md-12">
+              <label class="control-label">Meta Keywords</label>
+              <input type="text" name="metaKeywords" class="form-control" value="${metaKeywords}" placeholder="e.g. web, development, seo">
+            </div>
+            <div class="form-group col-md-12">
+              <label class="control-label">Meta Description</label>
+              <textarea name="metaDescription" class="form-control" rows="3" placeholder="Page description...">${metaDescription}</textarea>
+            </div>
+            <div class="form-group col-md-12">
+              <label class="control-label">Meta Author</label>
+              <input type="text" name="metaAuthor" class="form-control" value="${metaAuthor}" placeholder="Author name">
+            </div>
+          `;
+
+          panels.push({
+            title: "Meta SEO",
+            name: "meta-seo-editor",
+            html: html
+>>>>>>> Stashed changes
           });
+
+          return panels;
+        });
+
+        // Save changes to page data
+        mbrApp.$body.on("input change", "[name='metaKeywords'], [name='metaDescription'], [name='metaAuthor']", function() {
+          const page = mbrApp.activePage;
+          if (page) {
+            page["metaKeywords"] = $("[name='metaKeywords']").val().trim();
+            page["metaDescription"] = $("[name='metaDescription']").val().trim();
+            page["metaAuthor"] = $("[name='metaAuthor']").val().trim();
+          }
+        });
+      },
+
+      exportHtml: function(html, pageName) {
+        const page = mbrApp.pages.find(p => p.name === pageName);
+        if (!page) return html;
+
+        let metaTags = "";
+
+        if (page.metaKeywords) {
+          metaTags += `<meta name="keywords" content="${page.metaKeywords}">\n`;
         }
+        if (page.metaDescription) {
+          metaTags += `<meta name="description" content="${page.metaDescription}">\n`;
+        }
+        if (page.metaAuthor) {
+          metaTags += `<meta name="author" content="${page.metaAuthor}">\n`;
+        }
+
+        if (metaTags) {
+          html = html.replace(/<\/head>/i, metaTags + "</head>");
+        }
+
+        return html;
       }
-    });
-  }, ["jQuery", "mbrApp", "TR()"]);
-  
-/*
-
-defineM("meta-seo-editor", function(jQuery, mbrApp, TR) {
-    mbrApp.regExtension({
-        name: "meta-seo-editor",
-        events: {
-            load: function() {
-                console.log("meta-seo-editor loaded");
-                var a = this;
-                
-                // Add inputs to each page's settings
-                a.addFilter("sidebarPageSettings", function(settingsPanels, pageData) {
-                    const keywords = pageData["meta-seo-keywords"] || "";
-                    const description = pageData["meta-seo-description"] || "";
-                    const author = pageData["meta-seo-author"] || "";
-
-                    const html = [
-                        '<div class="form-group col-md-12">',
-                        '  <label class="control-label">Meta Keywords:</label>',
-                        '  <input type="text" id="meta-seo-keywords" class="form-control" value="' + keywords + '" placeholder="e.g. photography, travel, blog">',
-                        '</div>',
-                        '<div class="form-group col-md-12">',
-                        '  <label class="control-label">Meta Description:</label>',
-                        '  <textarea id="meta-seo-description" class="form-control" rows="3" placeholder="Short summary for search engines">' + description + '</textarea>',
-                        '</div>',
-                        '<div class="form-group col-md-12">',
-                        '  <label class="control-label">Meta Author:</label>',
-                        '  <input type="text" id="meta-seo-author" class="form-control" value="' + author + '" placeholder="Your Name or Company">',
-                        '</div>'
-                    ].join("\n");
-
-                    settingsPanels.push({
-                        title: "SEO Meta Tags",
-                        name: "meta-seo-editor",
-                        html: html
-                    });
-
-                    return settingsPanels;
-                });
-
-                // Save inputs to page settings
-                mbrApp.$body.on("input", "#meta-seo-keywords", function () {
-                    const page = mbrApp.activePage;
-                    if (page) page["meta-seo-keywords"] = $(this).val().trim();
-                });
-
-                mbrApp.$body.on("input", "#meta-seo-description", function () {
-                    const page = mbrApp.activePage;
-                    if (page) page["meta-seo-description"] = $(this).val().trim();
-                });
-
-                mbrApp.$body.on("input", "#meta-seo-author", function () {
-                    const page = mbrApp.activePage;
-                    if (page) page["meta-seo-author"] = $(this).val().trim();
-                });
-            },
-
-            exportHtml: function(html, pageName) {
-                const page = mbrApp.pages.find(p => p.name === pageName);
-                if (!page) return html; 
-
-                const tags = [];
-
-                if (page["meta-seo-keywords"]) {
-                    tags.push(`<meta name="keywords" content="${page["meta-seo-keywords"].replace(/"/g, '&quot;')}">`);
-                }
-
-                if (page["meta-seo-description"]) {
-                    tags.push(`<meta name="description" content="${page["meta-seo-description"].replace(/"/g, '&quot;')}">`);
-                }
-
-                if (page["meta-seo-author"]) {
-                    tags.push(`<meta name="author" content="${page["meta-seo-author"].replace(/"/g, '&quot;')}">`);
-                }
-
-                if (tags.length) {
-                    const finalMeta = "\n<!-- SEO Meta Tags Start -->\n" + tags.join("\n") + "\n<!-- SEO Meta Tags End -->\n";
-                    html = html.replace(/<\/head>/i, finalMeta + "</head>");
-                }
-
-                return html;
-            }
-        }
-    });
+    }
+  });
 }, ["jQuery", "mbrApp", "TR()"]);
+<<<<<<< Updated upstream
 
 */
+=======
+>>>>>>> Stashed changes

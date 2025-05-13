@@ -5,6 +5,10 @@
     "minAppVersion": "5.4.0",
     "appScript": true,
     "appHtml": true,
-    "description": "Inset SEO content into every page. <a href='https://www.pixelagent.co.uk/software.html'>Learn more...</a>",
+    "appCss": true,
+    "author": "Pixelagent",
+    "authorUrl": "https://www.pixelagent.co.uk",
+    "description": "Insert SEO content into every page. <a href='https://www.pixelagent.co.uk/software.html'>Learn more...</a>",
     "logo": "thumbnail.jpg"
-}
+  }
+  
