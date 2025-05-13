@@ -1,6 +1,6 @@
-defineM("test-page-field", function(jQuery, mbrApp, TR) {
+defineM("meta-seo-editor", function(jQuery, mbrApp, TR) {
     mbrApp.regExtension({
-      name: "test-page-field",
+      name: "meta-seo-editor",
       events: {
         load: function() {
           console.log("Test extension loaded");
