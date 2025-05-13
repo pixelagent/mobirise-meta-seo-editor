@@ -1,3 +1,45 @@
+defineM("test-page-field", function(jQuery, mbrApp, TR) {
+    mbrApp.regExtension({
+      name: "test-page-field",
+      events: {
+        load: function() {
+          console.log("Test extension loaded");
+  
+          var a = this;
+  
+          a.addFilter("sidebarPageSettings", function(settingsPanels, pageData) {
+            const testVal = pageData["test-page-value"] || "";
+  
+            const html = [
+              '<div class="form-group col-md-12">',
+              '  <label class="control-label">Test Page Field</label>',
+              '  <input type="text" id="test-page-input" class="form-control" value="' + testVal + '" placeholder="Type something...">',
+              '</div>'
+            ].join("\n");
+  
+            settingsPanels.push({
+              title: "Test Field",
+              name: "test-page-field",
+              html: html
+            });
+  
+            return settingsPanels;
+          });
+  
+          // Save value
+          mbrApp.$body.on("input", "#test-page-input", function() {
+            const page = mbrApp.activePage;
+            if (page) {
+              page["test-page-value"] = $(this).val().trim();
+            }
+          });
+        }
+      }
+    });
+  }, ["jQuery", "mbrApp", "TR()"]);
+  
+/*
+
 defineM("meta-seo-editor", function(jQuery, mbrApp, TR) {
     mbrApp.regExtension({
         name: "meta-seo-editor",
@@ -81,3 +123,5 @@ defineM("meta-seo-editor", function(jQuery, mbrApp, TR) {
         }
     });
 }, ["jQuery", "mbrApp", "TR()"]);
+
+*/
