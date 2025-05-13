@@ -6,7 +6,8 @@ defineM("meta-seo-editor", function(jQuery, mbrApp, TR) {
         console.log("meta-seo loaded");
         // Check if the current page is a valid page
         var a = this;
-
+        // Add a new panel to the sidebar
+        // Check if the page is a valid page
         a.addFilter("sidebarPageSettings", function(settingsPanels, pageData) {
           const val = pageData["meta-seo-value"] || "";
 
