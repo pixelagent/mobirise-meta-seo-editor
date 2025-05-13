@@ -2,7 +2,7 @@
     "name": "Meta SEO Editor",
     "alias": "meta-seo-editor",
     "version": 1,
-    "minAppVersion": "5.4.1",
+    "minAppVersion": "5.4.0",
     "appScript": true,
     "appHtml": true,
     "description": "Inset SEO content into every page. <a href='https://www.pixelagent.co.uk/software.html'>Learn more...</a>",
