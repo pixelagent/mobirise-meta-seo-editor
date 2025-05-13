@@ -2,52 +2,61 @@ defineM("meta-seo-editor", function(jQuery, mbrApp, TR) {
   mbrApp.regExtension({
     name: "meta-seo-editor",
     events: {
-      load: function () {
-        const self = this;
+      load: function() {
+        var a = this;
 
-        // Add fields to page settings
-        self.addFilter("sidebarPageSettings", function (panels, pageData) {
-          const description = pageData["meta-description"] || "";
-          const keywords = pageData["meta-keywords"] || "";
+        // 1) Inject Meta SEO fields directly into Page Settings
+        var $container = a.$body.find("#app-page-settings .app-layer-cont");
 
-          panels.push({
-            title: "Meta SEO",
-            name: "meta-seo-editor",
-            html: [
-              '<div class="form-group col-md-12">',
-              '  <label class="control-label">Meta Description</label>',
-              `  <input type="text" name="meta-description" class="form-control" value="${description}" placeholder="Enter meta description">`,
-              '</div>',
-              '<div class="form-group col-md-12">',
-              '  <label class="control-label">Meta Keywords</label>',
-              `  <input type="text" name="meta-keywords" class="form-control" value="${keywords}" placeholder="Enter meta keywords">`,
-              '</div>'
-            ].join("\n")
-          });
+        $container.append([
+          '<div class="form-group col-md-12">',
+          '  <label for="meta_seo_description">Meta Description</label>',
+          '  <textarea id="meta_seo_description" ',
+          '    class="form-control" ',
+          '    data-page-settings="meta_seo_description" ',
+          '    rows="3" ',
+          '    placeholder="Enter custom meta description here…"></textarea>',
+          '</div>',
+          '<div class="form-group col-md-12">',
+          '  <label for="meta_seo_keywords">Meta Keywords</label>',
+          '  <textarea id="meta_seo_keywords" ',
+          '    class="form-control" ',
+          '    data-page-settings="meta_seo_keywords" ',
+          '    rows="2" ',
+          '    placeholder="Enter comma‑separated keywords…"></textarea>',
+          '</div>'
+        ].join("\n"));
 
-          return panels;
-        });
+        console.log("✅ Meta SEO Editor injected into page settings.");
 
-        // Save on change
-        mbrApp.$body.on("input", "input[name='meta-description'], input[name='meta-keywords']", function () {
-          const $input = jQuery(this);
-          const page = mbrApp.activePage;
-          if (page) {
-            page[$input.attr("name")] = $input.val().trim();
-          }
-        });
+        // 2) On publish, insert the stored values into <head> as meta tags
+        a.addFilter("publishHTML", function(html, pageData) {
+          var headInserts = [];
 
-        // Inject <meta> tags into <head> during export
-        self.addFilter("publishHTML", function (html, page) {
-          const headInsert = [];
-          if (page["meta-description"]) {
-            headInsert.push(`<meta name="description" content="${page["meta-description"]}">`);
-          }
-          if (page["meta-keywords"]) {
-            headInsert.push(`<meta name="keywords" content="${page["meta-keywords"]}">`);
+          if (pageData.meta_seo_description) {
+            headInserts.push(
+              '<meta name="description" content="' +
+              pageData.meta_seo_description.replace(/"/g, '&quot;') +
+              '">'
+            );
           }
 
-          return html.replace(/<\/head>/i, headInsert.join("\n") + "\n</head>");
+          if (pageData.meta_seo_keywords) {
+            headInserts.push(
+              '<meta name="keywords" content="' +
+              pageData.meta_seo_keywords.replace(/"/g, '&quot;') +
+              '">'
+            );
+          }
+
+          if (headInserts.length) {
+            html = html.replace(
+              /<\/head>/i,
+              headInserts.join("\n    ") + "\n</head>"
+            );
+          }
+
+          return html;
         });
       }
     }
