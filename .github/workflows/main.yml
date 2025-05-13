@@ -1,39 +1,30 @@
-on:
-  push:
-    tags:
-    - 'v*'
-
-name: Build Mobirise Extension
+### pixelagent-metaseo.mbrext
+### secrets.GH_PAT
 
 jobs:
   build:
     name: Create Downloadable Mobirise Extension
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout Code
-        uses: actions/checkout@master
+        uses: actions/checkout@v3
+
       - name: Create Mobirise Extension File
         run: |
           cd src/
           zip -r ../pixelagent-metaseo.mbrext .
           cd ../
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1.0.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          draft: false
-          prerelease: false
-      - name: Upload Release
-        id: upload-release-asset 
-        uses: actions/upload-release-asset@v1.0.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_PAT2 }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./pixelagent-metaseo.mbrext 
-          asset_name: pixelagent-metaseo.mbrext 
-          asset_content_type: application/zip
+
+      - name: Install GitHub CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gh
+
+      - name: Create GitHub Release and Upload Asset
+        run: |
+          GH_TOKEN=${{ secrets.GH_PAT }} gh release create file-change-${{ github.sha }} \
+            ./pixelagent-metaseo.mbrext \
+            --title "File Change Build ${{ github.sha }}" \
+            --notes "Automated release triggered by changes to src/" \
+            --prerelease
