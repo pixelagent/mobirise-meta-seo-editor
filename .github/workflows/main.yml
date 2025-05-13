@@ -37,4 +37,3 @@ jobs:
           asset_path: ./pixelagent-metaseo.mbrext 
           asset_name: pixelagent-metaseo.mbrext 
           asset_content_type: application/zip
-
