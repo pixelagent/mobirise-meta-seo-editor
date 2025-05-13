@@ -4,10 +4,9 @@ defineM("meta-seo-editor", function(jQuery, mbrApp, TR) {
     events: {
       load: function() {
         console.log("meta-seo loaded");
-        // Check if the current page is a valid page
+        // Set variable for this
         var a = this;
         // Add a new panel to the sidebar
-        // Check if the page is a valid page
         a.addFilter("sidebarPageSettings", function(settingsPanels, pageData) {
           const val = pageData["meta-seo-value"] || "";
 
@@ -17,7 +16,7 @@ defineM("meta-seo-editor", function(jQuery, mbrApp, TR) {
             '  <input type="text" name="meta-seo-input" class="form-control" value="' + val + '" placeholder="Enter meta description">',
             '</div>'
           ].join("\n");
-          // Check if the page is a valid page
+          // Setting panel
           settingsPanels.push({
             title: "Meta SEO",
             name: "meta-seo-editor",
@@ -32,6 +31,7 @@ defineM("meta-seo-editor", function(jQuery, mbrApp, TR) {
         // Save value on change
         mbrApp.$body.on("input", "input[name='meta-seo-input']", function () {
           const page = mbrApp.activePage;
+          // Check if the page is a valid page
           if (page) {
             page["meta-seo-value"] = $(this).val().trim();
             console.log("Saved meta SEO value:", page["meta-seo-value"]);
