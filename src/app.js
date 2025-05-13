@@ -1,5 +1,6 @@
 defineM("meta-seo-editor", function(jQuery, mbrApp, TR) {
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     mbrApp.regExtension({
       name: "meta-seo-editor",
       events: {
@@ -34,6 +35,8 @@ defineM("meta-seo-editor", function(jQuery, mbrApp, TR) {
               page["meta-seo-value"] = $(this).val().trim();
             }
 =======
+=======
+>>>>>>> Stashed changes
   mbrApp.regExtension({
     name: "meta-seo-editor",
     events: {
@@ -66,6 +69,9 @@ defineM("meta-seo-editor", function(jQuery, mbrApp, TR) {
             title: "Meta SEO",
             name: "meta-seo-editor",
             html: html
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
           });
 
@@ -109,7 +115,10 @@ defineM("meta-seo-editor", function(jQuery, mbrApp, TR) {
   });
 }, ["jQuery", "mbrApp", "TR()"]);
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
 */
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
