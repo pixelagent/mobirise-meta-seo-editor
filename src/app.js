@@ -3,23 +3,23 @@ defineM("meta-seo-editor", function(jQuery, mbrApp, TR) {
       name: "meta-seo-editor",
       events: {
         load: function() {
-          console.log("Test extension loaded");
+          console.log("meta-seo loaded");
   
           var a = this;
   
           a.addFilter("sidebarPageSettings", function(settingsPanels, pageData) {
-            const testVal = pageData["test-page-value"] || "";
+            const testVal = pageData["meta-seo-value"] || "";
   
             const html = [
               '<div class="form-group col-md-12">',
-              '  <label class="control-label">Test Page Field</label>',
-              '  <input type="text" id="test-page-input" class="form-control" value="' + testVal + '" placeholder="Type something...">',
+              '  <label class="control-label">meta-seo Field</label>',
+              '  <input type="text" id="meta-seo-input" class="form-control" value="' + testVal + '" placeholder="Type something...">',
               '</div>'
             ].join("\n");
   
             settingsPanels.push({
-              title: "Test Field",
-              name: "test-page-field",
+              title: "meta-seo Field",
+              name: "meta-seo-editor",
               html: html
             });
   
@@ -27,10 +27,10 @@ defineM("meta-seo-editor", function(jQuery, mbrApp, TR) {
           });
   
           // Save value
-          mbrApp.$body.on("input", "#test-page-input", function() {
+          mbrApp.$body.on("input", "#meta-seo-input", function() {
             const page = mbrApp.activePage;
             if (page) {
-              page["test-page-value"] = $(this).val().trim();
+              page["meta-seo-value"] = $(this).val().trim();
             }
           });
         }
