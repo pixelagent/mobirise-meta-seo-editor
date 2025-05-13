@@ -1,0 +1,10 @@
+{
+    "name": "Global HTML Insert",
+    "alias": "global-html-insert",
+    "version": 1,
+    "minAppVersion": "5.4.1",
+    "appScript": true,
+    "appHtml": true,
+    "description": "Inject custom HTML into the <head> tag of every page. <a href='https://www.pixelagent.co.uk/software.html'>Learn more...</a>",
+    "logo": "thumbnail.jpg"
+}
