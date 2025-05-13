@@ -2,19 +2,36 @@ defineM("meta-seo-editor", function(jQuery, mbrApp, TR) {
   mbrApp.regExtension({
     name: "meta-seo-editor",
     events: {
-      load: function() {
+      load: function () {
         var a = this;
 
-        // Inject Meta SEO fields directly into page settings
-        a.$body.find("#app-page-settings .app-layer-cont").append([
+        const $container = a.$body.find("#app-page-settings .app-layer-cont");
+
+        // Add a textarea to display full <body> HTML
+        $container.append([
           '<div class="form-group">',
-          '  <label for="meta_seo_description">Meta SEO Description</label>',
-          '  <textarea id="meta_seo_description" class="form-control" data-page-settings="meta_seo_description" rows="3" placeholder="Enter custom meta description here..."></textarea>',
+          '  <label for="body_html_viewer">Body HTML Content</label>',
+          '  <textarea id="body_html_viewer" class="form-control" rows="15" placeholder="Loading body HTML..."></textarea>',
           '</div>'
         ].join("\n"));
 
-        // Optional console for dev confirmation
-        console.log("✅ Meta SEO Editor injected into page settings.");
+        // Try to get the <body> HTML from the iframe
+        setTimeout(function () {
+          try {
+            const iframe = document.querySelector("#app-iframe");
+            if (iframe && iframe.contentDocument) {
+              const bodyHTML = iframe.contentDocument.body.innerHTML.trim();
+              a.$body.find("#body_html_viewer").val(bodyHTML);
+              console.log("✅ Injected <body> HTML into textarea");
+            } else {
+              console.warn("⚠️ iframe not found or not loaded");
+              a.$body.find("#body_html_viewer").val("Unable to load iframe content.");
+            }
+          } catch (e) {
+            console.error("❌ Error reading <body> HTML:", e);
+            a.$body.find("#body_html_viewer").val("Error reading HTML: " + e.message);
+          }
+        }, 1000); // Delay for iframe to load
       }
     }
   });
