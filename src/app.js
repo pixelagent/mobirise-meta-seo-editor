@@ -1,66 +1,83 @@
-defineM("global-html-insert", function (require, mbrApp, tr) {
+defineM("meta-seo-editor", function(jQuery, mbrApp, TR) {
     mbrApp.regExtension({
-        name: "global-html-insert",
+        name: "meta-seo-editor",
         events: {
-            load: function () {
-                const ext = this;
+            load: function() {
+                console.log("meta-seo-editor loaded");
 
-                // Sidebar settings
-                ext.addFilter("sidebarProjectSettings", function (items) {
-                    const settings = ext.projectSettings["global-html-insert"] || {
-                        head: "",
-                        afterBody: "",
-                        beforeBody: ""
-                    };
+                var a = this;
 
-                    items.push({
-                        name: "global-html-insert-settings",
-                        title: "Global HTML Insert",
-                        html: `
-                            <div class="form-group">
-                                <label>Before &lt;/head&gt;:</label>
-                                <textarea class="form-control" rows="4" name="ghi-head" placeholder="Paste the HTML code you want to have on every page right before </head> tag.">${settings.head || ""}</textarea>
-                            </div>
-                            <div class="form-group">
-                                <label>After &lt;body&gt;:</label>
-                                <textarea class="form-control" rows="4" name="ghi-after-body" placeholder="Paste the HTML code you want to have right after the opening <body> tag.">${settings.afterBody || ""}</textarea>
-                            </div>
-                            <div class="form-group">
-                                <label>Before &lt;/body&gt;:</label>
-                                <textarea class="form-control" rows="4" name="ghi-before-body" placeholder="Paste the HTML code you want to have right before the closing </body> tag.">${settings.beforeBody || ""}</textarea>
-                            </div>
-                        `
+                // Add inputs to each page's settings
+                a.addFilter("sidebarPageSettings", function(settingsPanels, pageData) {
+                    const keywords = pageData["meta-seo-keywords"] || "";
+                    const description = pageData["meta-seo-description"] || "";
+                    const author = pageData["meta-seo-author"] || "";
+
+                    const html = [
+                        '<div class="form-group col-md-12">',
+                        '  <label class="control-label">Meta Keywords:</label>',
+                        '  <input type="text" id="meta-seo-keywords" class="form-control" value="' + keywords + '" placeholder="e.g. photography, travel, blog">',
+                        '</div>',
+                        '<div class="form-group col-md-12">',
+                        '  <label class="control-label">Meta Description:</label>',
+                        '  <textarea id="meta-seo-description" class="form-control" rows="3" placeholder="Short summary for search engines">' + description + '</textarea>',
+                        '</div>',
+                        '<div class="form-group col-md-12">',
+                        '  <label class="control-label">Meta Author:</label>',
+                        '  <input type="text" id="meta-seo-author" class="form-control" value="' + author + '" placeholder="Your Name or Company">',
+                        '</div>'
+                    ].join("\n");
+
+                    settingsPanels.push({
+                        title: "SEO Meta Tags",
+                        name: "meta-seo-editor",
+                        html: html
                     });
 
-                    return items;
+                    return settingsPanels;
                 });
 
-                // Save settings on input
-                mbrApp.$body.on("input", "textarea[name^='ghi-']", function () {
-                    const ps = ext.projectSettings["global-html-insert"] || {};
-                    ps.head = $("textarea[name='ghi-head']").val();
-                    ps.afterBody = $("textarea[name='ghi-after-body']").val();
-                    ps.beforeBody = $("textarea[name='ghi-before-body']").val();
-                    ext.projectSettings["global-html-insert"] = ps;
+                // Save inputs to page settings
+                mbrApp.$body.on("input", "#meta-seo-keywords", function () {
+                    const page = mbrApp.activePage;
+                    if (page) page["meta-seo-keywords"] = $(this).val().trim();
                 });
 
-                // Inject HTML during publish
-                ext.addFilter("publishHTML", function (html) {
-                    const settings = ext.projectSettings["global-html-insert"];
-                    if (!settings) return html;
-
-                    if (settings.head) {
-                        html = html.replace(/<\/head>/i, settings.head + "\n</head>");
-                    }
-                    if (settings.afterBody) {
-                        html = html.replace(/<body[^>]*>/i, match => match + "\n" + settings.afterBody);
-                    }
-                    if (settings.beforeBody) {
-                        html = html.replace(/<\/body>/i, settings.beforeBody + "\n</body>");
-                    }
-
-                    return html;
+                mbrApp.$body.on("input", "#meta-seo-description", function () {
+                    const page = mbrApp.activePage;
+                    if (page) page["meta-seo-description"] = $(this).val().trim();
                 });
+
+                mbrApp.$body.on("input", "#meta-seo-author", function () {
+                    const page = mbrApp.activePage;
+                    if (page) page["meta-seo-author"] = $(this).val().trim();
+                });
+            },
+
+            exportHtml: function(html, pageName) {
+                const page = mbrApp.pages.find(p => p.name === pageName);
+                if (!page) return html;
+
+                const tags = [];
+
+                if (page["meta-seo-keywords"]) {
+                    tags.push(`<meta name="keywords" content="${page["meta-seo-keywords"].replace(/"/g, '&quot;')}">`);
+                }
+
+                if (page["meta-seo-description"]) {
+                    tags.push(`<meta name="description" content="${page["meta-seo-description"].replace(/"/g, '&quot;')}">`);
+                }
+
+                if (page["meta-seo-author"]) {
+                    tags.push(`<meta name="author" content="${page["meta-seo-author"].replace(/"/g, '&quot;')}">`);
+                }
+
+                if (tags.length) {
+                    const finalMeta = "\n<!-- SEO Meta Tags Start -->\n" + tags.join("\n") + "\n<!-- SEO Meta Tags End -->\n";
+                    html = html.replace(/<\/head>/i, finalMeta + "</head>");
+                }
+
+                return html;
             }
         }
     });
