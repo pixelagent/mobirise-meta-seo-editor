@@ -56,7 +56,7 @@ defineM("meta-seo-editor", function(jQuery, mbrApp, TR) {
 
             exportHtml: function(html, pageName) {
                 const page = mbrApp.pages.find(p => p.name === pageName);
-                if (!page) return html;
+                if (!page) return html; 
 
                 const tags = [];
 
