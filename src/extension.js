@@ -1,3 +1,6 @@
+console.log("✅ Meta SEO loaded");
+alert("✅ Meta SEO extension loaded!");
+
 defineM("meta-seo-editor", function(jQuery, mbrApp, TR) {
   mbrApp.regExtension({
     name: "meta-seo-editor",
