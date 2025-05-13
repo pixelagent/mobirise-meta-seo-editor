@@ -3,6 +3,8 @@
     "alias": "meta-seo-editor",
     "version": 1,
     "minAppVersion": "5.4.0",
+    "pageSettings": true,
+    "pageSettingsSidebar": true,
     "sidebarPageSettings": true,
     "sidebar": true,
     "appScript": true,
