@@ -17,7 +17,7 @@ defineM("meta-seo-editor", function(jQuery, mbrApp, TR) {
             '  <input type="text" name="meta-seo-input" class="form-control" value="' + val + '" placeholder="Enter meta description">',
             '</div>'
           ].join("\n");
-
+          // Check if the page is a valid page
           settingsPanels.push({
             title: "Meta SEO",
             name: "meta-seo-editor",
